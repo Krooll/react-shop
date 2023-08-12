@@ -1,63 +1,60 @@
 import styles from './Product.module.scss';
-import clsx from 'clsx';
 import Button from '../Button/Button';
 import PropTypes from 'prop-types'
 import { useState } from 'react';
-
+import ProductImage from '../ProductImage/ProductImage';
+import GetPrice from '../GetPrice/GetPrice';
+import ProductOption from '../ProductOption/ProductOption';
+import OptionSize from '../OptionSize/Option.Size';
+import OptionColor from '../OptionColor/OptionColor';
 
 const Product = props => {
 
   const [currentColor, setCurrentColor] = useState(props.colors[0]);
   const [currentSize, setCurrentSize] = useState(props.sizes[0].name);
 
-  const prepareColorClassName = color => {
-    return styles['color' + color[0].toUpperCase() + color.substr(1).toLowerCase()];
-  };
-
   const getPrice = () => {
-    
+    const actualPrice = props.basePrice;
+    const addPrice = props.sizes.find(finalPrice).additionalPrice;
+    function finalPrice(size){
+      return size.name === currentSize;
+    }
+    if(addPrice){
+      return actualPrice + addPrice;
+    }else {
+      return actualPrice;
+    }
   };
 
-  console.log('currentsize', currentSize);
-  console.log('currentcolor', currentColor);
+  const addToCart = () => {
+      const summary = {
+      name: props.name, 
+      price: getPrice(),
+      size: currentSize,
+      color: currentColor,
+    }
+
+    return console.log('Summary', summary);
+  }
 
   return (
     <article className={styles.product}>
-      <div className={styles.imageContainer}>
-        <img 
-          className={styles.image}
-          alt={props.title}
-          src={`${process.env.PUBLIC_URL}/images/products/shirt-${props.name}--${currentColor}.jpg`} />
-      </div>
+      <ProductImage name={props.name} title={props.title} currentColor={currentColor} />
       <div>
-        <header>
-          <h2 className={styles.name}>{props.title}</h2>
-          <span className={styles.price}>Price: {getPrice()}$</span>
-        </header>
+        <GetPrice title={props.title} getPrice={getPrice} />
         <form>
-          <div className={styles.sizes}>
-            <h3 className={styles.optionLabel}>Sizes</h3>
-            <ul className={styles.choices}>
-              {props.sizes.map(size => 
-              <li key={size.name}>
-                <button type="button" className={clsx(currentSize === size.name && styles.active)} onClick={() => setCurrentSize(size.name)}> {size.name} </button>
-              </li>
-              )}
-            </ul>
-          </div>
-          <div className={styles.colors}>
-            <h3 className={styles.optionLabel}>Colors</h3>
-            <ul className={styles.choices}>
-              {props.colors.map(item => 
-                <li key={item}>
-                  <button type="button" className={clsx(prepareColorClassName(item), item === currentColor && styles.active)} onClick={() => setCurrentColor(item)} />
-                </li>
-              )}
-            </ul>
-          </div>
-          <Button className={styles.button}>
-            <span className="fa fa-shopping-cart" />
-          </Button>
+          <ProductOption>
+            Size: <OptionSize sizes={props.sizes} currentSize={currentSize} setCurrentSize={setCurrentSize} />
+            <Button className={styles.button} addToCart={addToCart}>
+              <span className="fa fa-shopping-cart" />
+            </Button>
+          </ProductOption>
+          <ProductOption>
+            Color: <OptionColor colors={props.colors} currentColor={currentColor} setCurrentColor={setCurrentColor}/>
+            <Button className={styles.button} addToCart={addToCart}>
+              <span className="fa fa-shopping-cart" />
+            </Button>
+          </ProductOption>
         </form>
       </div>
     </article>
