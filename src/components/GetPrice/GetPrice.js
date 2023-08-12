@@ -11,7 +11,7 @@ const GetPrice = props => {
 };
 
 GetPrice.propTypes = {
-    getPrice: PropTypes.func.isRequired,
+    getPrice: PropTypes.number.isRequired,
 }
 
 export default GetPrice;

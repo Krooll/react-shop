@@ -13,7 +13,6 @@ const Product = props => {
   const [currentColor, setCurrentColor] = useState(props.colors[0]);
   const [currentSize, setCurrentSize] = useState(props.sizes[0].name);
   const price = props.basePrice;
-  console.log(price)
 
   const getPrice = useMemo(() => {
     const addPrice = props.sizes.find(size => size.name === currentSize).additionalPrice;
