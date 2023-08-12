@@ -5,7 +5,7 @@ const GetPrice = props => {
     return (
         <header>
           <h2 className={styles.name}>{props.title}</h2>
-          <span className={styles.price}>Price: {props.getPrice()}$</span>
+          <span className={styles.price}>Price: {props.getPrice}$</span>
         </header>
     );
 };

@@ -1,7 +1,7 @@
 import styles from './Product.module.scss';
 import Button from '../Button/Button';
 import PropTypes from 'prop-types'
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ProductImage from '../ProductImage/ProductImage';
 import GetPrice from '../GetPrice/GetPrice';
 import ProductOption from '../ProductOption/ProductOption';
@@ -12,24 +12,17 @@ const Product = props => {
 
   const [currentColor, setCurrentColor] = useState(props.colors[0]);
   const [currentSize, setCurrentSize] = useState(props.sizes[0].name);
+  const price = props.basePrice;
+  console.log(price)
 
-  const getPrice = () => {
-    const actualPrice = props.basePrice;
-    const addPrice = props.sizes.find(finalPrice).additionalPrice;
-    function finalPrice(size){
-      return size.name === currentSize;
-    }
-    if(addPrice){
-      return actualPrice + addPrice;
-    }else {
-      return actualPrice;
-    }
-  };
+  const getPrice = useMemo(() => {
+    const addPrice = props.sizes.find(size => size.name === currentSize).additionalPrice;
+    return price + addPrice}, [currentSize, props.sizes, price]);
 
   const addToCart = () => {
       const summary = {
       name: props.name, 
-      price: getPrice(),
+      price: getPrice,
       size: currentSize,
       color: currentColor,
     }
